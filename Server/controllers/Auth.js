@@ -190,3 +190,14 @@ exports.login=async(req,res)=>{
 
 // change password
 
+exports.changePassword=async(req,res)=>{
+    try{
+        // get data from req body
+        // old new confirm new password
+        //validation
+        // update the password in db
+        // send password updated mail and return response
+    }catch(error){
+
+    }
+}
