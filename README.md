@@ -1,0 +1,2 @@
+# EduMate
+ A Edtech Platform 
