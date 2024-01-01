@@ -193,11 +193,38 @@ exports.login=async(req,res)=>{
 exports.changePassword=async(req,res)=>{
     try{
         // get data from req body
+        const{email,inputpassword, newPassword,confirmNewPassword}=req.body;
+        //check if user exist
+        const userFind=await User.findOne({email:email});
         // old new confirm new password
+        if(!userFind){
+            return res.status(401).json({
+                success:false,
+                message:"account not found",
+            })
+        }
+        if(newPassword!==confirmNewPassword){
+            return res.status(401).json({
+                success:false,
+                message:"Password does not match",
+            })
+        }
+        if(bcrypt.compare(inputpassword,userFind.password)){
+            const hashedPassword=bcrypt.hash(newPassword,10);
+            await User.findOneAndUpdate({email:email},{password:hashedPassword},{new:true});
+        }
+        return res.status(200).json({
+            success:true,
+            message:"password changed successfully",
+        })
+        
         //validation
         // update the password in db
         // send password updated mail and return response
     }catch(error){
-
+        return res.status(401).json({
+            success:true,
+            message:"password changing Error",
+        })
     }
 }
