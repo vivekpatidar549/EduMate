@@ -7,7 +7,12 @@ const CourseSchema= new mongoose.Schema({
      },
      courseDescription:[{
         type:String,
-     }],  
+     }], 
+     instructor:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true,
+     }, 
      whatYouWillLearn:{
         type:String,
      },
