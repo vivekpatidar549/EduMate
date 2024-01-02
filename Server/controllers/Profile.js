@@ -40,3 +40,35 @@ exports.updateProfile=async(req,res)=>{
     }
 }
 
+
+exports.deleteAccount=async(req,res)=>{
+    try{
+        //get id
+        const id=req.user.id;
+        const userDetails=await User.findById(id);
+        //validation
+        if(!userDetails){
+            return res.status(404).json({
+                success:false,
+                message:"USer not Found",
+            })
+        }
+        // delete profile:- how to schedule it 
+        await Profile.findByIdAndDelete({_id:userDetails.additionalDetails})
+        //TODO :- unenroll user from all enrolled courses, what is cronjob
+        // delete user
+        await User.findByIdAndDelete({_id:id});
+        
+        //response
+        return res.status(200).json({
+            success:false,
+            message:" Account deleted Successfully",
+            profileDetails,
+        })
+    }catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"Error While deleting Account",
+        })
+    }
+}
