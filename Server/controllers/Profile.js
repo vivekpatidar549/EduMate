@@ -72,3 +72,23 @@ exports.deleteAccount=async(req,res)=>{
         })
     }
 }
+
+exports.getUserDetails=async(req,res)=>{
+    try{
+        //id
+        const id=req.user.id;
+        // validation
+        const userDetails= await User.findById(id).populate("additionalDetails").exec();
+        //response
+        return res.status(200).json({
+            success:false,
+            message:" USer data fetched Successfully",
+            userDetails,
+        })
+    }catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"Error While fetching Account Details",
+        })
+    }
+}
