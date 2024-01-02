@@ -68,3 +68,30 @@ exports.updateSection=async(req,res)=>{
     }
 }
 //delete
+
+exports.deleteSection=async(req,res)=>{
+    try{
+        //data fetch-> assuming tahat we are sendin ID in params
+        const {sectionId}=req.params;
+        //data validation
+        if(!sectionId){
+            return res.status(400).json({
+                success:false,
+                message:"Missing Properties",
+            })
+        }
+        //delete data
+        await Section.findByIdAndDelete(sectionId);
+        //return response
+        return res.status(200).json({
+            success:true,
+            message:"Section deleted SuccessFully",
+            updatedCourseDetails,
+        })
+    }catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"Unable to delete Section",
+        })
+    }
+}
