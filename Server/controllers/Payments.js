@@ -119,12 +119,23 @@ exports.verifySignature=async(req,res)=>{
                 "Congratulations, You are onboarded into new",
                 "congrats",
             )
+            console.log(emailResponse);
+            return res.status(200).json({
+                success:false,
+                message:"Signature Verified and COurse Added",
+            })
         }catch(error){
             return res.status(500).json({
                 success:false,
                 message:error.message,
             })
         }
+    }
+    else{
+        return res.status(400).json({
+            success:false,
+            message:"Invalid Request",
+        })
     }
 
 }
