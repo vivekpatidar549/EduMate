@@ -1,5 +1,5 @@
 const Course=require('../models/Course');
-const Tag=require('../models/Tags');
+const Category=require('../models/Category');
 const User=require('../models/user');
 const {uploadImageToCloudinary}=require('../utilities/imageUploader');
 
@@ -8,11 +8,11 @@ const {uploadImageToCloudinary}=require('../utilities/imageUploader');
 exports.createCourse=async(req,res)=>{
     try{
         //fetch data
-        const {courseName,courseDescription,whatYouWillLearn,price,tag}=req.body;
+        const {courseName,courseDescription,whatYouWillLearn,price,category}=req.body;
         //get thumbnail
         const thumbnail=req.files.thumbnailImage;
         //validation
-        if(!courseName|| !courseDescription || !whatYouWillLearn|| !price|| !tag){
+        if(!courseName|| !courseDescription || !whatYouWillLearn|| !price|| !category){
             return res.status(500).json({
                 success:false,
                 message:"All fields are required",
@@ -22,18 +22,19 @@ exports.createCourse=async(req,res)=>{
         const userId=req.user.id;
         const instructorDetails=await User.findOne({userId});
         console.log("instructorDetails",instructorDetails);
+        // TODO:- verify that userID and InstructorID same or different
         if(!instructorDetails){
             return res.status(404).json({
                 success:false,
                 message:"Instructor Not Found",
             })
         }
-        // check given tag is valid or not
-        const tagDetails=await Tag.findById(tag);
-        if(!tagDetails){
+        // check given category is valid or not
+        const categoryDetails=await Category.findById(category);
+        if(!categoryDetails){
             return res.status(500).json({
                 success:false,
-                message:"Tag details not found",
+                message:"Category details not found",
             })
         }
         // upload image to cloudinary
@@ -44,7 +45,7 @@ exports.createCourse=async(req,res)=>{
             courseDescription,
             instructor:instructorDetails._id,
             price,
-            tag:tagDetails._id,
+            category:categoryDetails._id,
             thumbnail:thumbnailImage.secure_url,
         })
         // update instructor detail by adding that course
@@ -55,7 +56,7 @@ exports.createCourse=async(req,res)=>{
                 }
             },{new:true});
 
-        //update tag schema 
+        //update category schema 
         return res.status(200).json({
             success:false,
             message:"Course created Successfully",
