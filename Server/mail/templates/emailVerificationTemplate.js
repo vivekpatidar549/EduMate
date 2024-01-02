@@ -1,0 +1,4 @@
+exports.otpTemplate=(otp)=>{
+    return `
+    `
+}
