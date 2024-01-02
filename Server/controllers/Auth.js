@@ -4,6 +4,7 @@ const otpGenerator=require('otp-generator');
 const Profile=require('../models/Profile');
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
+const mailSender = require('../utilities/mailSender');
 require('dotenv').config();
 
 // sendOTP  it create otp and store in db
@@ -209,7 +210,7 @@ exports.changePassword=async(req,res)=>{
                 message:"Password does not match",
             })
         }
-        if(bcrypt.compare(inputpassword,userFind.password)){
+        if(await bcrypt.compare(inputpassword,userFind.password)){
             const hashedPassword=bcrypt.hash(newPassword,10);
             await User.findOneAndUpdate({email:email},{password:hashedPassword},{new:true});
         }
