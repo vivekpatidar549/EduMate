@@ -4,7 +4,7 @@ const Course=require('../models/Course');
 const mailSender=require('../utilities/mailSender');
 const {courseEnrollmentEmail}=require('../mail/templates/courseEnrollment');
 const { default: mongoose } = require('mongoose');
-
+require('dotenv').config();
 
 
 //capture the payment and intitiate the razorpay order
@@ -83,7 +83,48 @@ exports.capturePayment=async(req,res)=>{
 }
 
 
-
+//verify signature of razorpay and Server
 exports.verifySignature=async(req,res)=>{
-    
+    const webHookSecret="12345678";
+    const signature=req.headers("x-razorpay-signature");
+    const shasum=crypto.createHmac("sha256",webHookSecret);
+    shasum.update(JSON.stringify(req.body));
+    const digest=shasum.digest("hex");
+    if(signature==digest){
+        console.log("payment is Authorized");
+        const  {userId,courseId}= req.body.payload.payment.entity.notes;
+        try{
+            //enroll student
+            const enrolledCourse=await Course.findOneAndUpdate({_id:courseId},
+                {$push:{studentsEnrolled:userId}},
+                {new:true});
+            if(!enrolledCourse){
+                return res.status(500).json({
+                    success:false,
+                    message:"Course not found",
+                })
+            }    
+            console.log(enrolledCourse);
+
+            // find student and add course to list of enrolled courses
+            const enrolledStudent=await User.findOneAndUpdate({_id:userId},
+                {$push:{courses:courseId}},{new:true});
+
+            console.log(enrolledStudent);
+
+            // send mail
+
+            const emailResponse =await mailSender(
+                enrolledStudent.email,
+                "Congratulations, You are onboarded into new",
+                "congrats",
+            )
+        }catch(error){
+            return res.status(500).json({
+                success:false,
+                message:error.message,
+            })
+        }
+    }
+
 }
