@@ -40,7 +40,7 @@ exports.sendOTP=async(req,res)=>{
     }
     const otpPayload={email,otp};
     // create an entry in DB
-    const otpBody=OTP.create(otpPayload);
+    const otpBody=await OTP.create(otpPayload);
     console.log(otpBody);
      // return response successfully
      res.status(200).json({
