@@ -65,7 +65,7 @@ exports.categoryPageDetails=async(req,res)=>{
         //get courses for different category
         const differentCategories=await Category.find({_id:{$ne:categoryId}}).populate("courses").exec();
          
-        //get top selling courses
+        //get top 10 selling courses
         //TODO:- 
         //return response
         return res.status(500).json({
