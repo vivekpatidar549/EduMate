@@ -47,3 +47,12 @@ exports.showAllCategory=async(req,res)=>{
         })
     }
 }
+
+
+exports.categoryPageDetails=async(req,res)=>{
+    try{
+
+    }catch(error){
+        
+    }
+}
